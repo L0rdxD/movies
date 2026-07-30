@@ -6,18 +6,18 @@ import { Preloader } from './Preloader';
 class Main extends React.Component {
     state = {
         movies: [],
+        loading: true,
     };
 
     componentDidMount() {
         fetch('http://www.omdbapi.com/?apikey=1fde3c22&s=matrix')
             .then((response) => response.json())
             // Добавлена проверка на случай ошибки API (data.Search может быть undefined)
-            .then((data) => this.setState({ movies: data.Search || [] }));
+            .then((data) => this.setState({ movies: data.Search, loading: false }));
     }
 
-    searchMovies = (str, type = 'all') => { // <-- Исправлено: добавлена запятая после str
-        if (!str) return;
-        
+    searchMovies = (str, type = 'all') => {
+        this.setState({loading: true});
         fetch(
             `http://www.omdbapi.com/?apikey=1fde3c22&s=${str}${
                 type !== 'all' ? `&type=${type}` : ''
@@ -25,19 +25,19 @@ class Main extends React.Component {
         )
             .then((response) => response.json())
             // Добавлена проверка на случай ошибки API
-            .then((data) => this.setState({ movies: data.Search || [] }));
+            .then((data) => this.setState({ movies: data.Search, loading: false}));
     };
 
     render() {
-        const { movies } = this.state;
-        
-        return (
-            <main className="container content">
-                <Search searchMovies={this.searchMovies} />
-                {!movies.length ? <Preloader /> : <Movies movies={movies} />}
-            </main>
-        );
-    }
+    const { movies, loading } = this.state;
+
+    return (
+        <main className='container content'>
+            <Search searchMovies={this.searchMovies} />
+            {loading ? <Preloader /> : <Movies movies={movies} />}
+        </main>
+    );
+}
 }
 
 export { Main };
