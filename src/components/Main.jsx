@@ -15,7 +15,11 @@ class Main extends React.Component {
         fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=matrix`)
             .then((response) => response.json())
             // Добавлена проверка на случай ошибки API (data.Search может быть undefined)
-            .then((data) => this.setState({ movies: data.Search, loading: false }));
+            .then((data) => this.setState({ movies: data.Search, loading: false }))
+            .catch((err) => {
+                console.error(err);
+                this.setState({ loading: false })
+})
     }
 
     searchMovies = (str, type = 'all') => {
@@ -27,7 +31,11 @@ class Main extends React.Component {
         )
             .then((response) => response.json())
             // Добавлена проверка на случай ошибки API
-            .then((data) => this.setState({ movies: data.Search, loading: false}));
+            .then((data) => this.setState({ movies: data.Search, loading: false}))
+            .catch((err) => {
+                console.error(err);
+                this.setState({ loading: false })
+})
     };
 
     render() {
